@@ -7,6 +7,21 @@ let chart;
 const ctx = document.getElementById('chart').getContext('2d');
 
 const Routes = {
+    // Function to add randomly generated city names to the datasets
+    addCities: function(cb) {
+        points40.forEach(function(datapoint) {
+            datapoint['city'] = chance.city();
+        });
+        points200.forEach(function(datapoint) {
+            datapoint['city'] = chance.city();
+        });
+        points200.forEach(function(datapoint) {
+            datapoint['city'] = chance.city();
+        });
+
+        return cb()
+    },
+    // Function to build chart based on points data passed
     buildChart: function(data, cb) {
     
         if (chart) chart.destroy();
@@ -31,7 +46,7 @@ const Routes = {
     
         if (cb) return cb();
     },
-
+    // Function to initialize and add event listner to points data select input
     initSelectHandler: function() {
         const selectEl = document.getElementById('points-select')
         const choices = new Choices(selectEl, {
@@ -50,7 +65,8 @@ const Routes = {
     }
 }
 
-
-Routes.buildChart(points40, () => {
-    Routes.initSelectHandler();
+Routes.addCities(() => {
+    Routes.buildChart(points40, () => {
+        Routes.initSelectHandler();
+    });
 });
