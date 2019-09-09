@@ -187,7 +187,7 @@ class Routes  {
             this.addTraces(this.sortedRoute);
             this.numStops = 0;
             this.visited = [];
-            //this.sortedRoute = [];
+            this.sortedRoute = [];
         });
     }
 
