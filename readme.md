@@ -27,7 +27,16 @@ If you have questions on the challenge, please contact Jared Sartin: jared@leftf
 
 # Candidate Notes:
 
-* Chance.js - library used to quickly add randomly generated city names to the datasets
-* Chart.js - charting library for scatter plot
+Uses an algorithm to find the next nearest point to create a path through all points in the graph.  Adds randomly generated city names
+to give context to a list of steps in the route.  Select a number of stops and click the button to see the route path get generated.
 
-* Thurs 4:20pm-5:00pm - init project, some graph prototyping
+Libraries used:
+
+* Chance.js - library used to quickly add randomly generated city names to the datasets
+* Chart.js - charting library used for route graph
+
+Time used:
+
+* ~2 hours researching the problem and coming up with a solution
+* ~1 hour implementing solution, building data processing functions
+* ~1 hour styling/debugging

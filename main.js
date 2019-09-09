@@ -7,9 +7,10 @@ class Routes  {
     constructor() {
         this.chart = undefined;
         this.currentData = points40;
+        this.numStops = 0;
         this.queue = [];
-        this.visited = [];
         this.sortedRoute = [];
+        this.visited = [];
     }
 
     // Function to add randomly generated city names to the datasets
@@ -20,14 +21,14 @@ class Routes  {
         points200.forEach((datapoint) => {
             datapoint['city'] = chance.city();
         });
-        points200.forEach((datapoint) => {
+        points500.forEach((datapoint) => {
             datapoint['city'] = chance.city();
         });
         
         return cb()
     }
 
-    // Dynamically add new trace lines to chart
+    // Function to dynamically add new trace lines to chart
     addTraces(data) {
         const _this = this;
         data.forEach(function(datapoint, index) {
@@ -45,7 +46,7 @@ class Routes  {
 
                 _this.chart.update();
 
-            }, 500 * index)
+            }, 200 * index)
         });        
     }
 
@@ -70,6 +71,9 @@ class Routes  {
                 animation: {
                     duration: 0
                 },
+                layout: {
+                    padding: 10
+                },
                 legend: {
                     display: false
                 },
@@ -78,6 +82,7 @@ class Routes  {
                         gridLines: {
                             display: false,
                             drawTicks: false,
+                            zeroLineColor: '#ffffff',
                             zeroLineWidth: 0
                         },
                         position: 'bottom',
@@ -91,6 +96,10 @@ class Routes  {
                     }],
                     yAxes: [{
                         display: false,
+                        gridLines: {
+                            zeroLineColor: '#ffffff',
+                            zeroLineWidth: 0
+                        }
                     }]
                 },
                 tooltips: {
@@ -102,21 +111,28 @@ class Routes  {
         if (cb) return cb();
     }
 
+    // Function to build the list of steps in the route
     buildTable = (data) => {
         const tableEl = document.getElementById('stops-table');
+        // Remove any previous table elements
+        tableEl.innerHTML = '';
         data.forEach((datapoint, index) => {
-            let newDiv = document.createElement('div');
+            // Add a new list item to the stops table
+            let newListItem = document.createElement('li');
             let nextCity;
+            // Don't add another item if we're at the end
             if (index === data.length - 1) {
-                nextCity = data[0].city;
+                return;
             } else {
                 nextCity = data[index + 1].city;
             }
-            newDiv.textContent = datapoint.city + ' => ' + nextCity;
-            tableEl.appendChild(newDiv);
+            newListItem.className += 'stop-list-item';
+            newListItem.textContent = datapoint.city + ' > ' + nextCity;
+            tableEl.appendChild(newListItem);
         });
     }
 
+    // Function to get distance between two points
     pointDistance = (point1, point2) => {
         let px = point1.x - point2.x;
         let py = point1.y - point2.y;
@@ -125,13 +141,13 @@ class Routes  {
         return dist;
     }
 
+    // Function to find nearest point to given point
     findShortest = (point, dataset) => {
         let _this = this;
         let shortestDist = 1000000;
         let closestPoint;
         let currentDist = 0
         dataset.forEach((datapoint) => {
-            //console.log('visited', visited);
             if (datapoint !== point && _this.visited.indexOf(datapoint) === -1) {
                 currentDist = _this.pointDistance(point, datapoint);
                 if (currentDist < shortestDist) {
@@ -143,6 +159,7 @@ class Routes  {
         return closestPoint;
     }
     
+    // Function to get shortest route
     processPoints = (dataset, cb) => {
         let nextPoint;
         this.queue.push(dataset[0]);
@@ -163,48 +180,49 @@ class Routes  {
         return cb();
     }
 
+    // Main function to initialize shortest route process
     sortRoutes = (dataset = currentData) => {
         this.processPoints(dataset, () => {
             this.buildTable(this.sortedRoute);
             this.addTraces(this.sortedRoute);
+            this.numStops = 0;
+            this.visited = [];
+            //this.sortedRoute = [];
         });
+    }
+
+    // Function to add event handler to button
+    initButtonHandler = () => {
+        const buttonEl = document.getElementById('points-btn');
+        const errorDiv = document.getElementById('error');
+
+        buttonEl.addEventListener('click', () => {
+            if (this.numStops === 40) {
+                this.sortRoutes(points40);
+                this.buildChart(points40);
+            } else if (this.numStops === 200) {
+                this.sortRoutes(points200);
+                this.buildChart(points200);
+            } else if (this.numStops === 500) {
+                this.sortRoutes(points500);
+                this.buildChart(points500);
+            } else {
+                // Show the error message
+                errorDiv.style.display = 'inline';
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                }, 5000);
+            }
+        })
     }
 
     // Function to initialize and add event listner to points data select input
     initSelectHandler = (cb) => {
-        const selectEl = document.getElementById('points-select')
-        const choices = new Choices(selectEl, {
-            choices: [
-                {
-                    value: '40',
-                    label: '40 Stops',
-                    selected: false,
-                    disabled: false
-                },
-                {
-                    value: '200',
-                    label: '200 Stops',
-                    selected: false,
-                    disabled: false
-                },
-                {
-                    value: '500',
-                    label: '500 Stops',
-                    selected: false,
-                    disabled: false
-                }
-            ],
-            placeholderValue: 'Select Tour Length...'
-        });
+        const selectEl = document.getElementById('points-select');
+
         // Listen for selection
-        selectEl.addEventListener('choice', (e) => {
-            if (parseInt(e.target.value) === 40) {
-                this.buildChart(points40);
-            } else if (parseInt(e.target.value) === 200) {
-                this.buildChart(points200);
-            } else {
-                this.buildChart(points500);
-            }
+        selectEl.addEventListener('change', (e) => {
+            this.numStops = parseInt(e.target.value);
         });
     
         if (cb) return cb();
@@ -215,8 +233,6 @@ let routes = new Routes();
 
 routes.addCities(() => {
     routes.initSelectHandler(() => {
-        routes.buildChart(points40, () => {
-            console.log('Initial chart build');
-        });
+        routes.initButtonHandler();
     });
 });

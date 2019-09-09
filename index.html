@@ -4,28 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,300,100,500,700,900" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.css" integrity="sha256-IvM9nJf/b5l2RoebiFno92E5ONttVyaEEsdemDC6iQA=" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
     <link rel="stylesheet" href="main.css" />
     <title>Band Route</title>
 </head>
 <body>
+    <span id="error">Please Select a Tour Length</span>
+    <h3 class="container-title">Tour Route Calculator</h3>
     <div class="main-container">
         <div class="chart-container">
+            <h4 class="container-title">Route Map</h4>
             <canvas id="chart"></canvas>
         </div>
         <div class="table-container">
+            <h4 class="container-title">Route Steps</h4>
             <div class="table-wrapper">
-                <ul id="stops-table"></ul>
+                <ol id="stops-table"></ol>
             </div>
         </div>
     </div>
-    <select id="points-select"></select>
+    <div class="input-wrapper">
+        <select id="points-select">
+            <option placeholder>Select Tour Length...</option>
+            <option value="40">40 Stops</option>
+            <option value="200">200 Stops</option>
+            <option value="500">500 Stops</option>
+        </select>
+        <button id="points-btn">View Route</button>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js" integrity="sha256-qSIshlknROr4J8GMHRlW3fGKrPki733tLq+qeMCR05Q=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chance/1.1.0/chance.min.js" integrity="sha256-+bo9VPNB85DWg5DKk5YGyHqCd4zCK4fjnhD9hSIM/aI=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore.js" integrity="sha256-O4179En8zabOlPYBNvGp8cF0uh0vnSZpW4Q6Ul1h+8c=" crossorigin="anonymous"></script>
     <script src="main.js"></script>
 </body>
 </html>
