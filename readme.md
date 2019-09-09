@@ -29,3 +29,5 @@ If you have questions on the challenge, please contact Jared Sartin: jared@leftf
 
 * Chance.js - library used to quickly add randomly generated city names to the datasets
 * Chart.js - charting library for scatter plot
+
+* Thurs 4:20pm-5:00pm - init project, some graph prototyping
